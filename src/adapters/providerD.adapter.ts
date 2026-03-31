@@ -16,7 +16,7 @@ const QUERY_PARAM_MAP: Record<SearchQuery["type"], string> = {
 
 export const providerDAdapter: BookProviderAdapter = {
   providerName: "ProviderD",
-  baseUrl: config.providers.d,
+  baseUrl: config.providers.providerD,
   format: "json",
 
   buildUrl: (query: SearchQuery): string => {
@@ -25,7 +25,7 @@ export const providerDAdapter: BookProviderAdapter = {
       [paramKey]: query.value,
       limit: String(query.limit),
     });
-    return `${config.providers.d}/search?${params.toString()}`;
+    return `${config.providers.providerD}/search?${params.toString()}`;
   },
 
   normalize: (rawItem: unknown): Book => {

@@ -1,4 +1,4 @@
-import { providerBBooks } from "../mockData";
+import { providerBMockData } from "../mockData";
 import type { ProviderBRawItem } from "../types";
 import { createQueryResolver } from "./createQueryResolver";
 import { matches } from "./matches";
@@ -24,7 +24,7 @@ export const executeProviderBQuery = (
 
   const { field, value } = query;
 
-  return providerBBooks
+  return providerBMockData
     .filter((item) => {
       const fieldValue = item[field];
 

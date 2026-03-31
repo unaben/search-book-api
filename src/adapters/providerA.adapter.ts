@@ -42,7 +42,7 @@ export const parseProviderAXml = (xmlString: string): unknown[] => {
 export const createProviderAAdapter = (
   format: ResponseFormat = "json"
 ): BookProviderAdapter => {
-  const baseUrl = config.providers.a;
+  const baseUrl = config.providers.providerA;
 
   return {
     providerName: "ProviderA",

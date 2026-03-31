@@ -1,4 +1,4 @@
-import { providerABooks } from "../mockData";
+import { providerAMockData } from "../mockData";
 import { ProviderARawItem } from "../types";
 import { createQueryResolver } from "./createQueryResolver";
 import { matches } from "./matches";
@@ -35,7 +35,7 @@ export const executeProviderAQuery = (
 
   const { field, value } = query;
 
-  return providerABooks
+  return providerAMockData
     .filter((item) => {
       const fieldValue = item.book[field as keyof ProviderARawItem["book"]];
       if (typeof fieldValue === "string") {

@@ -1,4 +1,4 @@
-import { providerCBooks } from "../mockData";
+import { providerCMockData } from "../mockData";
 import type { ProviderCRawItem } from "../types";
 import { createQueryResolver } from "./createQueryResolver";
 import { matches } from "./matches";
@@ -22,7 +22,7 @@ export const executeProviderCQuery = (
   if (!query) return [];
 
   const { field, value } = query;
-  return providerCBooks
+  return providerCMockData
     .filter((item) => {
       const fieldValue = item[field];
 

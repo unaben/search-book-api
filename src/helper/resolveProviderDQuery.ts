@@ -1,4 +1,4 @@
-import { providerDBooks } from "../mockData";
+import { providerDMockData } from "../mockData";
 import type { ProviderDRawItem } from "../types";
 import { createQueryResolver } from "./createQueryResolver";
 import { getNestedValue } from "./getNestedValue";
@@ -24,7 +24,7 @@ export const executeProviderDQuery = (
 
   const { field, value } = query;
 
-  return providerDBooks
+  return providerDMockData
     .filter((item) => {
       const fieldValue = getNestedValue(item, field as string);
 

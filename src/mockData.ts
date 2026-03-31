@@ -6,7 +6,7 @@ import type {
   ProviderERawItem,
 } from "./types";
 
-export const providerABooks: Array<ProviderARawItem> = [
+export const providerAMockData: Array<ProviderARawItem> = [
   {
     book: {
       title: "Hamlet",
@@ -89,7 +89,7 @@ export const providerABooks: Array<ProviderARawItem> = [
   },
 ];
 
-export const providerBBooks: Array<ProviderBRawItem> = [
+export const providerBMockData: Array<ProviderBRawItem> = [
   {
     name: "1984",
     writtenBy: "George Orwell",
@@ -155,7 +155,7 @@ export const providerBBooks: Array<ProviderBRawItem> = [
   },
 ];
 
-export const providerCBooks: Array<ProviderCRawItem> = [
+export const providerCMockData: Array<ProviderCRawItem> = [
   {
     title: "The Hobbit",
     authorName: "J.R.R. Tolkien",
@@ -212,7 +212,7 @@ export const providerCBooks: Array<ProviderCRawItem> = [
   },
 ];
 
-export const providerDBooks: Array<ProviderDRawItem> = [
+export const providerDMockData: Array<ProviderDRawItem> = [
   {
     book_title: "Dune",
     creators: {
@@ -281,7 +281,7 @@ export const providerDBooks: Array<ProviderDRawItem> = [
   },
 ];
 
-export const providerEBooks: Array<ProviderERawItem> = [
+export const providerEMockData: Array<ProviderERawItem> = [
   {
     metadata: {
       title: "The Great Gatsby",

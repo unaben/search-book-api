@@ -14,10 +14,10 @@ export const config = {
   port: parseInt(process.env["PORT"] ?? "8080", 10),
 
   providers: {
-    a: requireEnv("PROVIDER_A_BASE_URL"),
-    b: requireEnv("PROVIDER_B_BASE_URL"),
-    c: requireEnv("PROVIDER_C_BASE_URL"),
-    d: requireEnv('PROVIDER_D_BASE_URL'),
-    e: requireEnv("PROVIDER_E_BASE_URL"), 
+    providerA: requireEnv("PROVIDER_A_BASE_URL"),
+    providerB: requireEnv("PROVIDER_B_BASE_URL"),
+    providerC: requireEnv("PROVIDER_C_BASE_URL"),
+    providerD: requireEnv('PROVIDER_D_BASE_URL'),
+    providerE: requireEnv("PROVIDER_E_BASE_URL"), 
   },
 } as const;

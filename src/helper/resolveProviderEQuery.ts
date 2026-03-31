@@ -1,4 +1,4 @@
-import { providerEBooks } from "../mockData";
+import { providerEMockData } from "../mockData";
 import type { ProviderERawItem } from "../types";
 import { createQueryResolver } from "./createQueryResolver";
 import { getNestedValue } from "./getNestedValue";
@@ -23,7 +23,7 @@ export const executeProviderEQuery = (
 
   const { field, value } = query;
 
-  return providerEBooks
+  return providerEMockData
     .filter((item) => {
       const fieldValue = getNestedValue(item, field as string);
       if (typeof fieldValue === "string") {
