@@ -1,0 +1,38 @@
+import { providerDBooks } from "../mockData";
+import type { ProviderDRawItem } from "../types";
+import { createQueryResolver } from "./createQueryResolver";
+import { getNestedValue } from "./getNestedValue";
+import { matches } from "./matches";
+
+const QUERY_TO_FIELD_MAP = {
+  main_author: "creators.main_author",
+  house: "publishing.house",
+  release_year: "publishing.release_year",
+  isbn_13: "identifiers.isbn_13",
+  book_title: "book_title",
+} as const;
+
+export const resolveProviderDQuery = createQueryResolver(QUERY_TO_FIELD_MAP);
+
+export const executeProviderDQuery = (
+  params: URLSearchParams,
+  limit: number
+): ProviderDRawItem[] => {
+  const query = resolveProviderDQuery(params);
+
+  if (!query) return [];
+
+  const { field, value } = query;
+
+  return providerDBooks
+    .filter((item) => {
+      const fieldValue = getNestedValue(item, field as string);
+
+      if (typeof fieldValue === "string") {
+        return matches(fieldValue, value);
+      }
+
+      return String(fieldValue) === value;
+    })
+    .slice(0, limit);
+};
