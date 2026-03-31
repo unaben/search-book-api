@@ -1,6 +1,6 @@
 import { BookSearchError } from "../errors";
 import type { Book } from "../types";
-import { logger, writeSearchResult } from "../utils";
+import { logger, appendSearchResult } from "../utils";
 
 export const runSingleSearch = async (
   label:    string,
@@ -21,7 +21,7 @@ export const runSingleSearch = async (
       count: books.length,
     });
  
-    writeSearchResult(label, provider, format, books);
+    appendSearchResult(label, provider, format, books);
  
   } catch (err) {
     if (err instanceof BookSearchError) {

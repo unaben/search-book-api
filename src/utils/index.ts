@@ -1,5 +1,6 @@
+import path from "path";
 import { httpGet } from "./httpClient";
 import { logger } from "./logger";
-import { initSearchResultLog, writeSearchResult } from "./searchResultLogger";
+import { initSearchResultLog, appendSearchResult } from "./searchResultLogger";
 
-export { httpGet, logger, initSearchResultLog, writeSearchResult };
+export { httpGet, logger, initSearchResultLog, appendSearchResult };

@@ -45,7 +45,7 @@ export const initSearchResultLog = (): void => {
   }
 };
 
-export const writeSearchResult = (
+export const appendSearchResult = (
   query: string,
   provider: string,
   format: string,

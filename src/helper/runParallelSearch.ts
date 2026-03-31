@@ -9,7 +9,7 @@ import {
 import { ALL_PROVIDERS } from "../constants";
 import { BookSearchError } from "../errors";
 import type { ProviderEntry, QueryFn, QueryType } from "../types";
-import { logger, writeSearchResult } from "../utils";
+import { logger, appendSearchResult } from "../utils";
 
 const QUERY_FN_MAP: Record<QueryType, QueryFn> = {
   author: getBooksByAuthor,
@@ -57,7 +57,7 @@ export const runParallelSearch = async (
         count: result.value.length,
       });
 
-      writeSearchResult(
+      appendSearchResult(
         `Parallel — ${name} — Books by ${queryType}: ${value}`,
         name,
         format,
