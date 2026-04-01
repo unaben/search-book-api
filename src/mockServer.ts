@@ -90,12 +90,12 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    const filteredBook = executeProviderAQuery(params, limit, pathname);
+    const filteredBooks = executeProviderAQuery(params, limit, pathname);
 
     if (format === "xml") {
-      sendXml(res, 200, toXml(filteredBook));
+      sendXml(res, 200, toXml(filteredBooks));
     } else {
-      sendJson(res, 200, filteredBook);
+      sendJson(res, 200, filteredBooks);
     }
     return;
   }
@@ -107,12 +107,12 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    const filteredBook = executeProviderBQuery(params, limit);
+    const filteredBooks = executeProviderBQuery(params, limit);
 
-    logger.info("Provider B responding", { count: filteredBook.length });
+    logger.info("Provider B responding", { count: filteredBooks.length });
     setTimeout(() => {
       logger.info("Provider B responded", { latencyMs: 400 });
-      sendJson(res, 200, filteredBook);
+      sendJson(res, 200, filteredBooks);
     }, 400);
     return;
   }
@@ -131,12 +131,12 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    const filteredBook = executeProviderCQuery(params, limit);
+    const filteredBooks = executeProviderCQuery(params, limit);
 
-    logger.info("Provider C responding", { count: filteredBook.length });
+    logger.info("Provider C responding", { count: filteredBooks.length });
 
     setTimeout(() => {
-      sendJson(res, 200, filteredBook);
+      sendJson(res, 200, filteredBooks);
     }, 400);
 
     return;
@@ -149,12 +149,12 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    const filteredBook = executeProviderDQuery(params, limit);
+    const filteredBooks = executeProviderDQuery(params, limit);
 
-    logger.info("Provider D responding", { count: filteredBook.length });
+    logger.info("Provider D responding", { count: filteredBooks.length });
     setTimeout(() => {
       logger.info("Provider D responded", { latencyMs: 400 });
-      sendJson(res, 200, filteredBook);
+      sendJson(res, 200, filteredBooks);
     }, 400);
     return;
   }
@@ -166,12 +166,12 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    const filteredBook = executeProviderEQuery(params, limit);
+    const filteredBooks = executeProviderEQuery(params, limit);
 
-    logger.info("Provider E responding", { count: filteredBook.length });
+    logger.info("Provider E responding", { count: filteredBooks.length });
     setTimeout(() => {
       logger.info("Provider E responded", { latencyMs: 400 });
-      sendJson(res, 200, filteredBook);
+      sendJson(res, 200, filteredBooks);
     }, 400);
     return;
   }
