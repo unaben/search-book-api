@@ -23,25 +23,25 @@ let providerCCallCount = 0;
 const server = http.createServer((req, res) => {
   const url = new URL(req.url ?? "/", `http://localhost:${config.port}`);
   const pathname = url.pathname;
-  const params = url.searchParams;
-  const format = params.get("format") ?? "json";
+  const searchParams = url.searchParams;
+  const format = searchParams.get("format") ?? "json";
   const limit = parseInt(
-    params.get("limit") ??
-      params.get("maxResults") ??
-      params.get("count") ??
+    searchParams.get("limit") ??
+      searchParams.get("maxResults") ??
+      searchParams.get("count") ??
       "10"
   );
 
   logger.info("Incoming request", {
     method: req.method,
     pathname,
-    params: Object.fromEntries(params.entries()),
+    searchParams: Object.fromEntries(searchParams.entries()),
     format,
     limit,
   });
 
   if (pathname.startsWith("/provider-a/")) {
-    const query = resolveProviderAQuery(params, pathname);
+    const query = resolveProviderAQuery(searchParams, pathname);
 
     if (!query) {
       logger.info("Response sent", { status: 400, pathname });
@@ -60,13 +60,13 @@ const server = http.createServer((req, res) => {
   }
 
   if (pathname.startsWith("/provider-b/")) {
-    const query = resolveProviderBQuery(params);
+    const query = resolveProviderBQuery(searchParams);
     if (!query) {
       sendJson(res, 400, { error: "Invalid or missing query parameters" });
       return;
     }
 
-    const filteredBooks = executeProviderBQuery(params, limit);
+    const filteredBooks = executeProviderBQuery(searchParams, limit);
 
     logger.info("Provider B responding", { count: filteredBooks.length });
     setTimeout(() => {
@@ -83,14 +83,14 @@ const server = http.createServer((req, res) => {
       sendJson(res, 503, { error: "Service temporarily unavailable" });
       return;
     }
-    const query = resolveProviderCQuery(params);
+    const query = resolveProviderCQuery(searchParams);
 
     if (!query) {
       sendJson(res, 400, { error: "Invalid or missing query parameters" });
       return;
     }
 
-    const filteredBooks = executeProviderCQuery(params, limit);
+    const filteredBooks = executeProviderCQuery(searchParams, limit);
 
     logger.info("Provider C responding", { count: filteredBooks.length });
 
@@ -102,13 +102,13 @@ const server = http.createServer((req, res) => {
   }
 
   if (pathname.startsWith("/provider-d/")) {
-    const query = resolveProviderDQuery(params);
+    const query = resolveProviderDQuery(searchParams);
     if (!query) {
       sendJson(res, 400, { error: "Invalid or missing query parameters" });
       return;
     }
 
-    const filteredBooks = executeProviderDQuery(params, limit);
+    const filteredBooks = executeProviderDQuery(searchParams, limit);
 
     logger.info("Provider D responding", { count: filteredBooks.length });
     setTimeout(() => {
@@ -119,13 +119,13 @@ const server = http.createServer((req, res) => {
   }
 
   if (pathname.startsWith("/provider-e/")) {
-    const query = resolveProviderEQuery(params);
+    const query = resolveProviderEQuery(searchParams);
     if (!query) {
       sendJson(res, 400, { error: "Invalid or missing query parameters" });
       return;
     }
 
-    const filteredBooks = executeProviderEQuery(params, limit);
+    const filteredBooks = executeProviderEQuery(searchParams, limit);
 
     logger.info("Provider E responding", { count: filteredBooks.length });
     setTimeout(() => {

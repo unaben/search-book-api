@@ -15,10 +15,10 @@ const QUERY_TO_FIELD_MAP = {
 export const resolveProviderEQuery = createQueryResolver(QUERY_TO_FIELD_MAP);
 
 export const executeProviderEQuery = (
-  params: URLSearchParams,
+  searchParams: URLSearchParams,
   limit: number
 ): ProviderERawItem[] => {
-  const query = resolveProviderEQuery(params);
+  const query = resolveProviderEQuery(searchParams);
   if (!query) return [];
 
   const { field, value } = query;

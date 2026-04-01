@@ -27,14 +27,14 @@ export const fetchBooks = async (
   });
 
   try {
-    const rawItems = await httpGet<unknown[]>(
+    const rawBooksResponse = await httpGet<unknown[]>(
       url,
       adapter.providerName,
       adapter.format,
       retryConfig
     );
     
-    const books = rawItems.map((item) => adapter.normalize(item));
+    const books = rawBooksResponse.map((item) => adapter.normalize(item));
 
     logger.info("Books fetched successfully", {
       provider: adapter.providerName,

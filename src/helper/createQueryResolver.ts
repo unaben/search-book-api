@@ -5,7 +5,7 @@ export const createQueryResolver =
     pathMap?: Record<string, string>
   ) =>
   (
-    params: URLSearchParams,
+    searchParams: URLSearchParams,
     pathname?: string
   ): { type: keyof TMap; field: TMap[keyof TMap]; value: string } | null => {
 
@@ -13,19 +13,19 @@ export const createQueryResolver =
     if (pathMap && pathname) {
       const pathSegment = pathname.split("/")[2];
       const paramKey = pathMap[pathSegment];
-      const q = params.get(fallbackKey);
+      const q = searchParams.get(fallbackKey);
 
       if (paramKey && q) {
-        params.set(paramKey, q);
+        searchParams.set(paramKey, q);
       }
     }
 
     // 2. Try to find an exact matching key in the map
     const keys = Object.keys(map) as Array<keyof TMap>;
-    const type = keys.find((k) => params.has(k as string));
+    const type = keys.find((k) => searchParams.has(k as string));
 
     if (type) {
-      const value = params.get(type as string);
+      const value = searchParams.get(type as string);
       if (!value) return null;
       return { type, field: map[type], value };
     }
