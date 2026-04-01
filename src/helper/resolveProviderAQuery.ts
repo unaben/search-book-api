@@ -26,18 +26,16 @@ export const resolveProviderAQuery = createQueryResolver(
 );
 
 export const executeProviderAQuery = (
-  params: URLSearchParams,
-  limit: number,
-  pathname?: string
+  query: ReturnType<typeof resolveProviderAQuery>,
+  limit: number
 ): ProviderARawItem[] => {
-  const query = resolveProviderAQuery(params, pathname);
   if (!query) return [];
 
   const { field, value } = query;
 
   return providerAMockData
     .filter((item) => {
-      const fieldValue = item.book[field as keyof ProviderARawItem["book"]];
+      const fieldValue = item.book[field];
       if (typeof fieldValue === "string") {
         return matches(fieldValue, value);
       }

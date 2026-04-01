@@ -90,7 +90,7 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    const filteredBooks = executeProviderAQuery(params, limit, pathname);
+    const filteredBooks = executeProviderAQuery(query, limit);
 
     if (format === "xml") {
       sendXml(res, 200, toXml(filteredBooks));
