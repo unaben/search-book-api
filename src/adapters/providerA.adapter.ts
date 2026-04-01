@@ -51,12 +51,12 @@ export const createProviderAAdapter = (
 
     buildUrl: (query: SearchQuery): string => {
       const path = QUERY_PATH_MAP[query.type];
-      const params = new URLSearchParams({
+      const searchParams = new URLSearchParams({
         q: query.value,
         limit: String(query.limit),
         format,
       });
-      return `${baseUrl}/${path}?${params.toString()}`;
+      return `${baseUrl}/${path}?${searchParams.toString()}`;
     },
 
     normalize: (rawItem: unknown): Book => {

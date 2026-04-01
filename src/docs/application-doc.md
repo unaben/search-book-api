@@ -137,7 +137,7 @@ Provider A additionally supports XML responses via `parseProviderAXml`.
 | `isRetryable.ts` | Determines whether an HTTP status code warrants a retry (e.g. 503). |
 | `isValidBook.ts` | Guards against malformed books before writing to the result log. |
 | `sanitizeQuery.ts` | Strips sensitive values from query objects before logging. |
-| `redactSensitiveUrlParams.ts` | Redacts sensitive URL params (e.g. API keys) before logging. |
+| `redactSensitiveUrlParams.ts` | Redacts sensitive URL searchParams (e.g. API keys) before logging. |
 | `wait.ts` | Promise-based delay used for retry backoff. |
 
 ### Utils (`src/utils/`)
@@ -154,7 +154,7 @@ Provider A additionally supports XML responses via `parseProviderAXml`.
 A local HTTP server that simulates five book providers. Each provider route:
 
 - Parses the incoming `URLSearchParams`
-- Calls the provider's `resolveProviderXQuery` to validate params
+- Calls the provider's `resolveProviderXQuery` to validate searchParams
 - Calls `executeProviderXQuery` to filter mock data
 - Returns the result as JSON (or XML for Provider A)
 
@@ -234,7 +234,7 @@ Provider A uses path-based routing — the query type lives in the URL path rath
         │
         ▼
 pathMap["by-author"] → "author"
-params.set("author", "Shakespeare")
+searchParams.set("author", "Shakespeare")
         │
         ▼
 createQueryResolver resolves "author" normally
@@ -246,7 +246,7 @@ All other providers use standard param-based routing:
 /provider-c/v2/books?authorName=Tolkien
         │
         ▼
-createQueryResolver finds "authorName" in params
+createQueryResolver finds "authorName" in searchParams
         │
         ▼
 { type: "authorName", field: "authorName", value: "Tolkien" }

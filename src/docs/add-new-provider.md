@@ -135,10 +135,10 @@ export type QueryEType = keyof typeof QUERY_TO_FIELD_MAP;
 export const resolveProviderEQuery = createQueryResolver(QUERY_TO_FIELD_MAP);
 
 export const executeProviderEQuery = (
-  params: URLSearchParams,
+  searchParams: URLSearchParams,
   limit: number
 ): ProviderERawItem[] => {
-  const query = resolveProviderEQuery(params);
+  const query = resolveProviderEQuery(searchParams);
   if (!query) return [];
 
   const { field, value } = query;
@@ -180,11 +180,11 @@ export const providerEAdapter: BookProviderAdapter = {
 
   buildUrl: (query: SearchQuery): string => {
     const paramKey = QUERY_PARAM_MAP[query.type];
-    const params = new URLSearchParams({
+    const searchParams = new URLSearchParams({
       [paramKey]: query.value,
       limit: String(query.limit),
     });
-    return `${config.providers.e}/search?${params.toString()}`;
+    return `${config.providers.e}/search?${searchParams.toString()}`;
   },
 
   normalize: (rawItem: unknown): Book => {
@@ -213,13 +213,13 @@ import {
 } from "./helper";
 
 if (pathname.startsWith("/provider-e/")) {
-  const query = resolveProviderEQuery(params);
+  const query = resolveProviderEQuery(searchParams);
   if (!query) {
     sendJson(res, 400, { error: "Invalid or missing query parameters" });
     return;
   }
 
-  const filteredBooks = executeProviderEQuery(params, limit);
+  const filteredBooks = executeProviderEQuery(searchParams, limit);
 
   logger.info("Provider E responding", { count: filteredBooks.length });
   setTimeout(() => {

@@ -16,12 +16,12 @@ export const providerCAdapter: BookProviderAdapter = {
 
   buildUrl: (query: SearchQuery): string => {
     const paramKey = QUERY_PARAM_MAP[query.type];
-    const params = new URLSearchParams({      
+    const searchParams = new URLSearchParams({      
       [paramKey]: query.value,
       limit: String(query.limit),
     });
     
-    return `${config.providers.providerC}/v2/books?${params.toString()}`;
+    return `${config.providers.providerC}/v2/books?${searchParams.toString()}`;
   },
 
   normalize: (rawItem: unknown): Book => {
