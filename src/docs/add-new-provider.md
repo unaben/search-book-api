@@ -219,12 +219,12 @@ if (pathname.startsWith("/provider-e/")) {
     return;
   }
 
-  const filtered = executeProviderEQuery(params, limit);
+  const filteredBook = executeProviderEQuery(params, limit);
 
-  logger.info("Provider E responding", { count: filtered.length });
+  logger.info("Provider E responding", { count: filteredBook.length });
   setTimeout(() => {
     logger.info("Provider E responded", { latencyMs: 400 });
-    sendJson(res, 200, filtered);
+    sendJson(res, 200, filteredBook);
   }, 400);
   return;
 }
