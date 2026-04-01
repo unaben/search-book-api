@@ -73,42 +73,47 @@ const server = http.createServer((req, res) => {
       "10"
   );
 
-  if (pathname.startsWith("/provider-a/")) {
-    const filtered = executeProviderAQuery(params, limit, pathname);
+  logger.info("Incoming request", {
+    method: req.method,
+    pathname,
+    params: Object.fromEntries(params.entries()),
+    format,
+    limit,
+  });
 
+  if (pathname.startsWith("/provider-a/")) {
     const query = resolveProviderAQuery(params, pathname);
 
     if (!query) {
+      logger.info("Response sent", { status: 400, pathname });
       sendJson(res, 400, { error: "Invalid or missing parameters" });
       return;
     }
+
+    const filtered = executeProviderAQuery(params, limit, pathname);
 
     if (format === "xml") {
       sendXml(res, 200, toXml(filtered));
     } else {
       sendJson(res, 200, filtered);
     }
-
     return;
   }
 
   if (pathname.startsWith("/provider-b/")) {
+    const query = resolveProviderBQuery(params);
+    if (!query) {
+      sendJson(res, 400, { error: "Invalid or missing query parameters" });
+      return;
+    }
+
     const filtered = executeProviderBQuery(params, limit);
 
-    if (filtered.length === 0) {
-      const query = resolveProviderBQuery(params);
-      if (!query) {
-        sendJson(res, 400, { error: "Invalid or missing query parameters" });
-        return;
-      }
-    }
     logger.info("Provider B responding", { count: filtered.length });
-
     setTimeout(() => {
       logger.info("Provider B responded", { latencyMs: 400 });
       sendJson(res, 200, filtered);
     }, 400);
-
     return;
   }
 
@@ -138,44 +143,36 @@ const server = http.createServer((req, res) => {
   }
 
   if (pathname.startsWith("/provider-d/")) {
-    const filtered = executeProviderDQuery(params, limit);
-
-    if (filtered.length === 0) {
-      const query = resolveProviderDQuery(params);
-      if (!query) {
-        sendJson(res, 400, { error: "Invalid or missing query parameters" });
-        return;
-      }
+    const query = resolveProviderDQuery(params);
+    if (!query) {
+      sendJson(res, 400, { error: "Invalid or missing query parameters" });
+      return;
     }
 
-    logger.info("Provider D responding", { count: filtered.length });
+    const filtered = executeProviderDQuery(params, limit);
 
+    logger.info("Provider D responding", { count: filtered.length });
     setTimeout(() => {
       logger.info("Provider D responded", { latencyMs: 400 });
       sendJson(res, 200, filtered);
     }, 400);
-
     return;
   }
 
   if (pathname.startsWith("/provider-e/")) {
-    const filtered = executeProviderEQuery(params, limit);
-  
-    if (filtered.length === 0) {
-      const query = resolveProviderEQuery(params);
-      if (!query) {
-        sendJson(res, 400, { error: "Invalid or missing query parameters" });
-        return;
-      }
+    const query = resolveProviderEQuery(params);
+    if (!query) {
+      sendJson(res, 400, { error: "Invalid or missing query parameters" });
+      return;
     }
-  
+
+    const filtered = executeProviderEQuery(params, limit);
+
     logger.info("Provider E responding", { count: filtered.length });
-  
     setTimeout(() => {
       logger.info("Provider E responded", { latencyMs: 400 });
       sendJson(res, 200, filtered);
     }, 400);
-  
     return;
   }
 
