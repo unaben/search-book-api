@@ -98,10 +98,6 @@ Add the environment variable to `src/config.ts`:
 export const config = {
   port: parseInt(process.env["PORT"] ?? "8080", 10),
   providers: {
-    a: requireEnv("PROVIDER_A_BASE_URL"),
-    b: requireEnv("PROVIDER_B_BASE_URL"),
-    c: requireEnv("PROVIDER_C_BASE_URL"),
-    d: requireEnv("PROVIDER_D_BASE_URL"),
     e: requireEnv("PROVIDER_E_BASE_URL"), // ← add
   },
 } as const;
@@ -246,18 +242,10 @@ Add the adapter to `src/constants/index.ts` so it is included in parallel search
 
 ```typescript
 import {
-  providerAAdapter,
-  providerBAdapter,
-  providerCAdapter,
-  providerDAdapter,
   providerEAdapter, // ← add
 } from "../adapters";
 
 export const ALL_PROVIDERS = [
-  { adapter: providerAAdapter, name: "ProviderA", format: "json" },
-  { adapter: providerBAdapter, name: "ProviderB", format: "json" },
-  { adapter: providerCAdapter, name: "ProviderC", format: "json" },
-  { adapter: providerDAdapter, name: "ProviderD", format: "json" },
   { adapter: providerEAdapter, name: "ProviderE", format: "json" }, // ← add
 ] as const;
 ```
