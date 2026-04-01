@@ -213,23 +213,19 @@ import {
 } from "./helper";
 
 if (pathname.startsWith("/provider-e/")) {
-  const filtered = executeProviderEQuery(params, limit);
-
-  if (filtered.length === 0) {
-    const query = resolveProviderEQuery(params);
-    if (!query) {
-      sendJson(res, 400, { error: "Invalid or missing query parameters" });
-      return;
-    }
+  const query = resolveProviderEQuery(params);
+  if (!query) {
+    sendJson(res, 400, { error: "Invalid or missing query parameters" });
+    return;
   }
 
-  logger.info("Provider E responding", { count: filtered.length });
+  const filtered = executeProviderEQuery(params, limit);
 
+  logger.info("Provider E responding", { count: filtered.length });
   setTimeout(() => {
     logger.info("Provider E responded", { latencyMs: 400 });
     sendJson(res, 200, filtered);
   }, 400);
-
   return;
 }
 ```
