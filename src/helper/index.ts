@@ -28,6 +28,9 @@ import {
 } from "./resolveProviderEQuery";
 import { matches } from "./matches";
 import { getValueAtDotPath } from "./getValueAtDotPath";
+import { toXml } from "./toXml";
+import { sendJson } from "./sendJson";
+import { sendXml } from "./sendXml";
 
 export {
   getTextContent,
@@ -50,4 +53,7 @@ export {
   getValueAtDotPath,
   resolveProviderEQuery,
   executeProviderEQuery,
+  toXml,
+  sendJson,
+  sendXml
 };

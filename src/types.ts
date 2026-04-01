@@ -139,3 +139,6 @@ export type QueryValueMap = {
 export type QueryBuilderMap = {
   [K in QueryType]: (value: QueryValueMap[K], limit: number) => SearchQuery;
 };
+
+
+export type ProviderAFiltered = ProviderARawItem[];

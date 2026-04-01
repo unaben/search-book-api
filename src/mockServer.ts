@@ -12,52 +12,11 @@ import {
   executeProviderDQuery,
   resolveProviderEQuery,
   executeProviderEQuery,
+  toXml,
+  sendJson,
+  sendXml,
 } from "./helper";
-import type { ProviderARawItem } from "./types";
 import { logger } from "./utils";
-
-type ProviderAFiltered = ProviderARawItem[];
-
-const toXml = (books: ProviderAFiltered): string => {
-  const items = books
-    .map(
-      ({ book, stock }) => `
-    <item>
-      <book>
-        <title>${book.title}</title>
-        <author>${book.author}</author>
-        <isbn>${book.isbn}</isbn>
-        <publisher>${book.publisher}</publisher>
-        <year>${book.year}</year>
-      </book>
-      <stock>
-        <quantity>${stock.quantity}</quantity>
-        <price>${stock.price}</price>
-      </stock>
-    </item>`
-    )
-    .join("");
-
-  return `<?xml version="1.0" encoding="UTF-8"?><books>${items}</books>`;
-};
-
-const sendJson = (
-  res: http.ServerResponse,
-  status: number,
-  data: unknown
-): void => {
-  res.writeHead(status, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(data));
-};
-
-const sendXml = (
-  res: http.ServerResponse,
-  status: number,
-  xml: string
-): void => {
-  res.writeHead(status, { "Content-Type": "application/xml" });
-  res.end(xml);
-};
 
 let providerCCallCount = 0;
 
