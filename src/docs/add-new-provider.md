@@ -119,7 +119,7 @@ Create `src/helper/resolveProviderEQuery.ts`:
 import { providerEBooks } from "../mockData";
 import type { ProviderERawItem } from "../types";
 import { createQueryResolver } from "./createQueryResolver";
-import { getNestedValue } from "./getNestedValue";
+import { getValueAtDotPath } from "./getValueAtDotPath";
 import { matches } from "./matches";
 
 const QUERY_TO_FIELD_MAP = {
@@ -145,7 +145,7 @@ export const executeProviderEQuery = (
 
   return providerEBooks
     .filter((item) => {
-      const fieldValue = getNestedValue(item, field as string);
+      const fieldValue = getValueAtDotPath(item, field as string);
       if (typeof fieldValue === "string") {
         return matches(fieldValue, value);
       }

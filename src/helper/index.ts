@@ -27,7 +27,7 @@ import {
   executeProviderEQuery,
 } from "./resolveProviderEQuery";
 import { matches } from "./matches";
-import { getNestedValue } from "./getNestedValue";
+import { getValueAtDotPath } from "./getValueAtDotPath";
 
 export {
   getTextContent,
@@ -47,7 +47,7 @@ export {
   executeProviderCQuery,
   executeProviderDQuery,
   matches,
-  getNestedValue,
+  getValueAtDotPath,
   resolveProviderEQuery,
   executeProviderEQuery,
 };

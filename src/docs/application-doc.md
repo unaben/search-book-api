@@ -27,7 +27,7 @@ src/
 │
 ├── helper/
 │   ├── createQueryResolver.ts
-│   ├── getNestedValue.ts
+│   ├── getValueAtDotPath.ts
 │   ├── getTextContent.ts
 │   ├── index.ts
 │   ├── isRetryable.ts
@@ -91,7 +91,7 @@ example-client.ts  (entry point)
        │                                                │
        │                                         resolveProviderXQuery()
        │                                         executeProviderXQuery()
-       │                                         getNestedValue() (D, E only)
+       │                                         getValueAtDotPath() (D, E only)
        │                                                │
        ◄───────────────── raw JSON / XML ───────────────┘
        │
@@ -124,13 +124,13 @@ Provider A additionally supports XML responses via `parseProviderAXml`.
 | File | Purpose |
 |---|---|
 | `createQueryResolver.ts` | Generic factory that creates a resolver function for a given param-to-field map. Supports both param-based and path-based routing via an optional `pathMap`. Used by all provider executors. |
-| `getNestedValue.ts` | Traverses a nested object using a dot-notation path string (e.g. `"contributors.primary.full_name"`). Used by executors for providers with deeply nested raw data shapes (D, E). |
+| `getValueAtDotPath.ts` | Traverses a nested object using a dot-notation path string (e.g. `"contributors.primary.full_name"`). Used by executors for providers with deeply nested raw data shapes (D, E). |
 | `getTextContent.ts` | XML DOM helper used by the Provider A XML parser. |
 | `resolveProviderAQuery.ts` | Provider A resolver — path-based routing (`/by-author`, `/by-title`). Uses `createQueryResolver` with a `pathMap` to inject the path segment as a param before resolving. |
 | `resolveProviderBQuery.ts` | Provider B resolver — flat param-based routing. |
 | `resolveProviderCQuery.ts` | Provider C resolver — param-based routing with provider-specific param names (`authorName`, `isbnCode`). |
-| `resolveProviderDQuery.ts` | Provider D resolver — param-based routing with dot-notation field paths for nested data access via `getNestedValue`. |
-| `resolveProviderEQuery.ts` | Provider E resolver — param-based routing with three-level nested data access via `getNestedValue`. |
+| `resolveProviderDQuery.ts` | Provider D resolver — param-based routing with dot-notation field paths for nested data access via `getValueAtDotPath`. |
+| `resolveProviderEQuery.ts` | Provider E resolver — param-based routing with three-level nested data access via `getValueAtDotPath`. |
 | `runSingleSearch.ts` | Runs a single provider query, logs results, writes to file. |
 | `runParallelSearch.ts` | Fires all providers concurrently via `Promise.allSettled`, collects and logs results independently. |
 | `matches.ts` | Case-insensitive string matching used by mock executors. |
@@ -165,8 +165,8 @@ Providers also simulate real-world conditions:
 | A | Path-based (`/by-author`, `/by-title`) | Supports both JSON and XML response formats |
 | B | Param-based | 400ms simulated latency |
 | C | Param-based with custom param names | Every other request returns 503 to exercise the retry path |
-| D | Param-based with nested data | Nested data shape accessed via dot-notation paths using `getNestedValue` |
-| E | Param-based with deeply nested data | Three-level nested data shape accessed via `getNestedValue` |
+| D | Param-based with nested data | Nested data shape accessed via dot-notation paths using `getValueAtDotPath` |
+| E | Param-based with deeply nested data | Three-level nested data shape accessed via `getValueAtDotPath` |
 
 ---
 
@@ -221,7 +221,7 @@ Executor QUERY_TO_FIELD_MAP  keys must match the URL param key exactly
 Raw item field / path        flat field name or dot-notation path
         │
         ▼
-getNestedValue()             resolves dot-notation path into the nested raw item
+getValueAtDotPath()             resolves dot-notation path into the nested raw item
                              (used by providers D and E only)
 ```
 
@@ -252,12 +252,12 @@ createQueryResolver finds "authorName" in params
 { type: "authorName", field: "authorName", value: "Tolkien" }
 ```
 
-### getNestedValue
+### getValueAtDotPath
 
 Used by providers D and E whose raw data is deeply nested. Takes an object and a dot-notation path and walks down the object to return the value:
 
 ```typescript
-getNestedValue(item, "contributors.primary.full_name")
+getValueAtDotPath(item, "contributors.primary.full_name")
 // → item.contributors.primary.full_name
 ```
 
