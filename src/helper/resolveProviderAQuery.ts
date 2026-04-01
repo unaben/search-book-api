@@ -1,5 +1,5 @@
 import { providerAMockData } from "../mockData";
-import { ProviderARawItem } from "../types";
+import type { ProviderARawItem } from "../types";
 import { createQueryResolver } from "./createQueryResolver";
 import { matches } from "./matches";
 

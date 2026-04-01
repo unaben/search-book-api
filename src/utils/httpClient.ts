@@ -1,10 +1,10 @@
 import axios, { AxiosError } from "axios";
-import type { RetryConfig, ResponseFormat } from "../types";
-import { logger } from "./logger";
 import { parseProviderAXml } from "../adapters/providerA.adapter";
 import { HTTP_STATUS } from "../constants";
-import { isRetryable, wait, redactSensitiveUrlParams } from "../helper";
 import { BookSearchError } from "../errors";
+import { redactSensitiveUrlParams, isRetryable, wait } from "../helper";
+import type { ResponseFormat, RetryConfig } from "../types";
+import { logger } from "./logger";
 
 export const httpGet = async <T>(
   url: string,

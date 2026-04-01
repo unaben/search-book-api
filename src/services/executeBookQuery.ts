@@ -1,11 +1,11 @@
 import { fetchBooks } from "../providers/bookSearchClient";
 import type {
+  QueryBuilderMap,
+  TypeQuery,
   BookProviderAdapter,
+  QueryValueMap,
   RetryConfig,
   Book,
-  QueryBuilderMap,
-  QueryValueMap,
-  TypeQuery,
 } from "../types";
 
 const queryBuilders: QueryBuilderMap = {
@@ -23,7 +23,7 @@ const executeBookQuery = <T extends TypeQuery>(
   limit: number,
   retryConfig?: RetryConfig
 ): Promise<Book[]> => {
-  const searchQuery = queryBuilders[type](value, limit); 
+  const searchQuery = queryBuilders[type](value, limit);
   return fetchBooks(adapter, searchQuery, retryConfig);
 };
 

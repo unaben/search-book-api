@@ -1,13 +1,15 @@
 import {
-  parseProviderAXml,
   providerAAdapter,
+  providerBAdapter,
+  providerCAdapter,
+} from "../adapters";
+import {
+  parseProviderAXml,
+  createProviderAAdapter,
 } from "../adapters/providerA.adapter";
-import { providerBAdapter } from "../adapters/providerB.adapter";
-import { providerCAdapter } from "../adapters/providerC.adapter";
-import type { Book, SearchQuery } from "../types";
-import { createProviderAAdapter } from "../adapters/providerA.adapter";
 import { QUERY_LIMITS } from "../constants";
 import { sanitizeQuery } from "../helper";
+import type { Book, SearchQuery } from "../types";
 
 const expectedBook: Book = {
   title: "Hamlet",

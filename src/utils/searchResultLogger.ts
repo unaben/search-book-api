@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
-import type { Book } from "../types";
 import { isValidBook } from "../helper";
+import type { Book } from "../types";
 
 const LOG_DIR = path.resolve(process.cwd(), "logs");
 const RESULT_FILE = path.join(LOG_DIR, "search-results.json");

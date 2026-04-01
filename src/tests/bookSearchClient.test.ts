@@ -8,7 +8,7 @@ import {
   getBooksByPublisher,
   getBooksByYear,
 } from "../services";
-import { Book } from "../types";
+import type { Book } from "../types";
 
 jest.mock("axios");
 const mockedAxios = axios as Mocked<typeof axios>;

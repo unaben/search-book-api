@@ -1,5 +1,5 @@
 import { QUERY_LIMITS } from "../constants";
-import { SearchQuery } from "../types";
+import type { SearchQuery } from "../types";
 
 export const sanitizeQuery = (query: SearchQuery): SearchQuery => {
   const trimmed = query.value.trim();

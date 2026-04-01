@@ -1,3 +1,5 @@
+import { ALL_PROVIDERS } from "../constants";
+import { BookSearchError } from "../errors";
 import {
   getBooksByAuthor,
   getBooksByPublisher,
@@ -5,10 +7,7 @@ import {
   getBooksByIsbn,
   getBooksByTitle,
 } from "../services";
-
-import { ALL_PROVIDERS } from "../constants";
-import { BookSearchError } from "../errors";
-import type { ProviderEntry, QueryFn, QueryType } from "../types";
+import type { QueryType, QueryFn, ProviderEntry } from "../types";
 import { logger, appendSearchResult } from "../utils";
 
 const QUERY_FN_MAP: Record<QueryType, QueryFn> = {
