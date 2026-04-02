@@ -7,30 +7,31 @@ import { redactSensitiveUrlParams } from "./redactSensitiveUrlParams";
 import { isValidBook } from "./isValidBook";
 import { runParallelSearch } from "./runParallelSearch";
 import {
-  resolveProviderAQuery,
+  buildProviderAQuery,
   executeProviderAQuery,
-} from "./resolveProviderAQuery";
+} from "./buildProviderAQuery";
 import {
-  resolveProviderBQuery,
+  buildProviderBQuery,
   executeProviderBQuery,
-} from "./resolveProviderBQuery";
+} from "./buildProviderBQuery";
 import {
-  resolveProviderCQuery,
+  buildProviderCQuery,
   executeProviderCQuery,
-} from "./resolveProviderCQuery";
+} from "./buildProviderCQuery";
 import {
-  resolveProviderDQuery,
+  buildProviderDQuery,
   executeProviderDQuery,
-} from "./resolveProviderDQuery";
+} from "./buildProviderDQuery";
 import {
-  resolveProviderEQuery,
+  buildProviderEQuery,
   executeProviderEQuery,
-} from "./resolveProviderEQuery";
+} from "./buildProviderEQuery";
 import { matches } from "./matches";
 import { getValueAtDotPath } from "./getValueAtDotPath";
 import { toXml } from "./toXml";
 import { sendJson } from "./sendJson";
 import { sendXml } from "./sendXml";
+import getSearchParams from "./getSearchParams";
 
 export {
   getTextContent,
@@ -41,19 +42,20 @@ export {
   redactSensitiveUrlParams,
   isValidBook,
   runParallelSearch,
-  resolveProviderAQuery,
-  resolveProviderBQuery,
-  resolveProviderCQuery,
-  resolveProviderDQuery,
+  buildProviderAQuery,
+  buildProviderBQuery,
+  buildProviderCQuery,
+  buildProviderDQuery,
   executeProviderAQuery,
   executeProviderBQuery,
   executeProviderCQuery,
   executeProviderDQuery,
   matches,
   getValueAtDotPath,
-  resolveProviderEQuery,
+  buildProviderEQuery,
   executeProviderEQuery,
   toXml,
   sendJson,
-  sendXml
+  sendXml,
+  getSearchParams
 };

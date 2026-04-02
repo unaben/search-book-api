@@ -34,11 +34,11 @@ src/
 │   ├── isValidBook.ts
 │   ├── matches.ts
 │   ├── redactSensitiveUrlParams.ts
-│   ├── resolveProviderAQuery.ts
-│   ├── resolveProviderBQuery.ts
-│   ├── resolveProviderCQuery.ts
-│   ├── resolveProviderDQuery.ts
-│   ├── resolveProviderEQuery.ts
+│   ├── buildProviderAQuery.ts
+│   ├── buildProviderBQuery.ts
+│   ├── buildProviderCQuery.ts
+│   ├── buildProviderDQuery.ts
+│   ├── buildProviderEQuery.ts
 │   ├── runParallelSearch.ts
 │   ├── runSingleSearch.ts
 │   ├── sanitizeQuery.ts
@@ -126,11 +126,11 @@ Provider A additionally supports XML responses via `parseProviderAXml`.
 | `createQueryResolver.ts` | Generic factory that creates a resolver function for a given param-to-field map. Supports both param-based and path-based routing via an optional `pathMap`. Used by all provider executors. |
 | `getValueAtDotPath.ts` | Traverses a nested object using a dot-notation path string (e.g. `"contributors.primary.full_name"`). Used by executors for providers with deeply nested raw data shapes (D, E). |
 | `getTextContent.ts` | XML DOM helper used by the Provider A XML parser. |
-| `resolveProviderAQuery.ts` | Provider A resolver — path-based routing (`/by-author`, `/by-title`). Uses `createQueryResolver` with a `pathMap` to inject the path segment as a param before resolving. |
-| `resolveProviderBQuery.ts` | Provider B resolver — flat param-based routing. |
-| `resolveProviderCQuery.ts` | Provider C resolver — param-based routing with provider-specific param names (`authorName`, `isbnCode`). |
-| `resolveProviderDQuery.ts` | Provider D resolver — param-based routing with dot-notation field paths for nested data access via `getValueAtDotPath`. |
-| `resolveProviderEQuery.ts` | Provider E resolver — param-based routing with three-level nested data access via `getValueAtDotPath`. |
+| `buildProviderAQuery.ts` | Provider A resolver — path-based routing (`/by-author`, `/by-title`). Uses `createQueryResolver` with a `pathMap` to inject the path segment as a param before resolving. |
+| `buildProviderBQuery.ts` | Provider B resolver — flat param-based routing. |
+| `buildProviderCQuery.ts` | Provider C resolver — param-based routing with provider-specific param names (`authorName`, `isbnCode`). |
+| `buildProviderDQuery.ts` | Provider D resolver — param-based routing with dot-notation field paths for nested data access via `getValueAtDotPath`. |
+| `buildProviderEQuery.ts` | Provider E resolver — param-based routing with three-level nested data access via `getValueAtDotPath`. |
 | `runSingleSearch.ts` | Runs a single provider query, logs results, writes to file. |
 | `runParallelSearch.ts` | Fires all providers concurrently via `Promise.allSettled`, collects and logs results independently. |
 | `matches.ts` | Case-insensitive string matching used by mock executors. |

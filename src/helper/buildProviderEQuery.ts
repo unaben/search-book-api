@@ -12,13 +12,13 @@ const QUERY_TO_FIELD_MAP = {
   title: "metadata.title",
 } as const;
 
-export const resolveProviderEQuery = createQueryResolver(QUERY_TO_FIELD_MAP);
+export const buildProviderEQuery = createQueryResolver(QUERY_TO_FIELD_MAP);
 
 export const executeProviderEQuery = (
   searchParams: URLSearchParams,
   limit: number
 ): ProviderERawItem[] => {
-  const query = resolveProviderEQuery(searchParams);
+  const query = buildProviderEQuery(searchParams);
   if (!query) return [];
 
   const { field, value } = query;

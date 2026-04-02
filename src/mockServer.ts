@@ -2,15 +2,15 @@ import http from "http";
 import { URL } from "url";
 import { config } from "./config";
 import {
-  resolveProviderAQuery,
+  buildProviderAQuery,
   executeProviderAQuery,
-  resolveProviderBQuery,
+  buildProviderBQuery,
   executeProviderBQuery,
-  resolveProviderCQuery,
+  buildProviderCQuery,
   executeProviderCQuery,
-  resolveProviderDQuery,
+  buildProviderDQuery,
   executeProviderDQuery,
-  resolveProviderEQuery,
+  buildProviderEQuery,
   executeProviderEQuery,
   toXml,
   sendJson,
@@ -41,7 +41,7 @@ const server = http.createServer((req, res) => {
   });
 
   if (pathname.startsWith("/provider-a/")) {
-    const query = resolveProviderAQuery(searchParams, pathname);
+    const query = buildProviderAQuery(searchParams, pathname);
 
     if (!query) {
       logger.info("Response sent", { status: 400, pathname });
@@ -60,7 +60,7 @@ const server = http.createServer((req, res) => {
   }
 
   if (pathname.startsWith("/provider-b/")) {
-    const query = resolveProviderBQuery(searchParams);
+    const query = buildProviderBQuery(searchParams);
     if (!query) {
       sendJson(res, 400, { error: "Invalid or missing query parameters" });
       return;
@@ -83,7 +83,7 @@ const server = http.createServer((req, res) => {
       sendJson(res, 503, { error: "Service temporarily unavailable" });
       return;
     }
-    const query = resolveProviderCQuery(searchParams);
+    const query = buildProviderCQuery(searchParams);
 
     if (!query) {
       sendJson(res, 400, { error: "Invalid or missing query parameters" });
@@ -102,7 +102,7 @@ const server = http.createServer((req, res) => {
   }
 
   if (pathname.startsWith("/provider-d/")) {
-    const query = resolveProviderDQuery(searchParams);
+    const query = buildProviderDQuery(searchParams);
     if (!query) {
       sendJson(res, 400, { error: "Invalid or missing query parameters" });
       return;
@@ -119,7 +119,7 @@ const server = http.createServer((req, res) => {
   }
 
   if (pathname.startsWith("/provider-e/")) {
-    const query = resolveProviderEQuery(searchParams);
+    const query = buildProviderEQuery(searchParams);
     if (!query) {
       sendJson(res, 400, { error: "Invalid or missing query parameters" });
       return;

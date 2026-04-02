@@ -113,7 +113,7 @@ PROVIDER_E_BASE_URL=http://localhost:8080/provider-e
 
 ## Step 4 — Create the Executor
 
-Create `src/helper/resolveProviderEQuery.ts`:
+Create `src/helper/buildProviderEQuery.ts`:
 
 ```typescript
 import { providerEBooks } from "../mockData";
@@ -132,13 +132,13 @@ const QUERY_TO_FIELD_MAP = {
 
 export type QueryEType = keyof typeof QUERY_TO_FIELD_MAP;
 
-export const resolveProviderEQuery = createQueryResolver(QUERY_TO_FIELD_MAP);
+export const buildProviderEQuery = createQueryResolver(QUERY_TO_FIELD_MAP);
 
 export const executeProviderEQuery = (
   searchParams: URLSearchParams,
   limit: number
 ): ProviderERawItem[] => {
-  const query = resolveProviderEQuery(searchParams);
+  const query = buildProviderEQuery(searchParams);
   if (!query) return [];
 
   const { field, value } = query;
@@ -209,11 +209,11 @@ Import and add the Provider E handler in `src/mockServer.ts`:
 ```typescript
 import {
   executeProviderEQuery,
-  resolveProviderEQuery,
+  buildProviderEQuery,
 } from "./helper";
 
 if (pathname.startsWith("/provider-e/")) {
-  const query = resolveProviderEQuery(searchParams);
+  const query = buildProviderEQuery(searchParams);
   if (!query) {
     sendJson(res, 400, { error: "Invalid or missing query parameters" });
     return;
@@ -259,7 +259,7 @@ Export from the index files:
 export { providerEAdapter } from "./providerE.adapter";
 
 // src/helper/index.ts
-export { resolveProviderEQuery, executeProviderEQuery } from "./resolveProviderEQuery";
+export { buildProviderEQuery, executeProviderEQuery } from "./buildProviderEQuery";
 ```
 
 Use in `src/example-client.ts`:
@@ -279,7 +279,7 @@ await runParallelSearch("author", "Harper Lee", 3, [
 - [ ] Type added to `types.ts`
 - [ ] Mock data added to `mockData.ts`
 - [ ] Env var added to `config.ts` and `.env`
-- [ ] Executor created in `helper/resolveProviderEQuery.ts`
+- [ ] Executor created in `helper/buildProviderEQuery.ts`
 - [ ] Adapter created in `adapters/providerE.adapter.ts`
 - [ ] Handler added to `mockServer.ts`
 - [ ] Adapter registered in `constants/index.ts` `ALL_PROVIDERS`

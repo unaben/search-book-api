@@ -12,13 +12,13 @@ const QUERY_TO_FIELD_MAP = {
   book_title: "book_title",
 } as const;
 
-export const resolveProviderDQuery = createQueryResolver(QUERY_TO_FIELD_MAP);
+export const buildProviderDQuery = createQueryResolver(QUERY_TO_FIELD_MAP);
 
 export const executeProviderDQuery = (
   searchParams: URLSearchParams,
   limit: number
 ): ProviderDRawItem[] => {
-  const query = resolveProviderDQuery(searchParams);
+  const query = buildProviderDQuery(searchParams);
 
   if (!query) return [];
 
@@ -27,11 +27,9 @@ export const executeProviderDQuery = (
   return providerDMockData
     .filter((item) => {
       const fieldValue = getValueAtDotPath(item, field as string);
-
       if (typeof fieldValue === "string") {
         return matches(fieldValue, value);
       }
-
       return String(fieldValue) === value;
     })
     .slice(0, limit);

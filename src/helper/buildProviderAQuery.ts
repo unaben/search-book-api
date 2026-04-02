@@ -19,14 +19,14 @@ const PATH_TO_PARAM: Record<string, string> = {
   "by-title": "title",
 };
 
-export const resolveProviderAQuery = createQueryResolver(
+export const buildProviderAQuery = createQueryResolver(
   QUERY_TO_FIELD_MAP,
   "q",
   PATH_TO_PARAM
 );
 
 export const executeProviderAQuery = (
-  query: ReturnType<typeof resolveProviderAQuery>,
+  query: ReturnType<typeof buildProviderAQuery>,
   limit: number
 ): ProviderARawItem[] => {
   if (!query) return [];

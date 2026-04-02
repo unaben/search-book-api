@@ -1,4 +1,5 @@
 import { config } from "../config";
+import { getSearchParams } from "../helper";
 import type { BookProviderAdapter, SearchQuery, Book, ProviderCRawItem } from "../types";
 
 const QUERY_PARAM_MAP: Record<SearchQuery["type"], string> = {
@@ -15,12 +16,7 @@ export const providerCAdapter: BookProviderAdapter = {
   format: "json",
 
   buildUrl: (query: SearchQuery): string => {
-    const paramKey = QUERY_PARAM_MAP[query.type];
-    const searchParams = new URLSearchParams({      
-      [paramKey]: query.value,
-      limit: String(query.limit),
-    });
-    
+    const searchParams = getSearchParams(QUERY_PARAM_MAP, query)    
     return `${config.providers.providerC}/v2/books?${searchParams.toString()}`;
   },
 

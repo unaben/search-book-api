@@ -11,13 +11,13 @@ const QUERY_TO_FIELD_MAP = {
   title: "title",
 } as const;
 
-export const resolveProviderCQuery = createQueryResolver(QUERY_TO_FIELD_MAP);
+export const buildProviderCQuery = createQueryResolver(QUERY_TO_FIELD_MAP);
 
 export const executeProviderCQuery = (
   searchParams: URLSearchParams,
   limit: number
 ): ProviderCRawItem[] => {
-  const query = resolveProviderCQuery(searchParams);  
+  const query = buildProviderCQuery(searchParams);  
 
   if (!query) return [];
 
@@ -25,11 +25,9 @@ export const executeProviderCQuery = (
   return providerCMockData
     .filter((item) => {
       const fieldValue = item[field];
-
       if (typeof fieldValue === "string") {
         return matches(fieldValue, value);
       }
-
       return String(fieldValue) === value;
     })
     .slice(0, limit);

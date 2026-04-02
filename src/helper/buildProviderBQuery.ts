@@ -11,14 +11,14 @@ const QUERY_TO_FIELD_MAP = {
   name: "name",
 } as const;
 
-export const resolveProviderBQuery =
+export const buildProviderBQuery =
   createQueryResolver(QUERY_TO_FIELD_MAP);
 
 export const executeProviderBQuery = (
   searchParams: URLSearchParams,
   limit: number
 ): ProviderBRawItem[] => {
-  const query = resolveProviderBQuery(searchParams);
+  const query = buildProviderBQuery(searchParams);
 
   if (!query) return [];
 
@@ -27,11 +27,9 @@ export const executeProviderBQuery = (
   return providerBMockData
     .filter((item) => {
       const fieldValue = item[field];
-
       if (typeof fieldValue === "string") {
         return matches(fieldValue, value);
       }
-
       return String(fieldValue) === value;
     })
     .slice(0, limit);
