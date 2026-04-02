@@ -1,6 +1,49 @@
 # Book Search API
 
-A multi-provider book search system that queries multiple book providers in parallel, normalizes their different response formats into a single unified shape, and logs the results.
+A multi-provider book search system that queries multiple book providers in parallel, normalizes their different response formats into a single unified `Book` shape, and logs the results.
+
+---
+
+## Summary
+
+The application accepts a search query — by author, title, publisher, year, ISBN, or price — and fires it at multiple book provider APIs simultaneously. Each provider has its own URL structure, param naming convention, and response shape. The adapter pattern isolates all of that provider-specific knowledge so the rest of the app never has to know about it. Results are normalized, logged, and written to disk after every query.
+
+---
+
+## Data Flow
+
+```
+example-client.ts  (entry point)
+       │
+       ▼
+  singleProviderSearch / parallelProviderSearch
+  (Promise.allSettled fires all providers concurrently)
+       │
+       ▼
+  getBooksByAuthor / getBooksByTitle / ...   (services)
+  (createQueryExecutor factory bakes in the query type)
+       │
+       ▼
+  fetchBooks  (providers/bookSearchClient.ts)
+  (retry loop with exponential backoff)
+       │
+       ├── adapter.buildUrl()          adapter.normalize()
+       │        │                             ▲
+       │        ▼                             │
+       │   HTTP GET ──────────────► mockServer.ts
+       │                                      │
+       │                            buildProviderXQuery()
+       │                            filterProviderXBooks()
+       │                            getValueAtDotPath() (D, E only)
+       │                                      │
+       └──────── raw JSON / XML ◄─────────────┘
+       │
+       ▼
+  Book[]
+       │
+       ├──► logger (structured JSON → prettyLog in dev)
+       └──► searchResultLogger (appends to search-results.json)
+```
 
 ---
 
@@ -20,28 +63,33 @@ src/
 │   └── index.ts
 │
 ├── docs/
-│   └── applicationDoc.md
+│   ├── add-new-provider.md
+│   └── application-doc.md
 │
 ├── errors/
 │   └── index.ts
 │
 ├── helper/
-│   ├── createQueryResolver.ts
-│   ├── getValueAtDotPath.ts
-│   ├── getTextContent.ts
-│   ├── index.ts
-│   ├── isRetryable.ts
-│   ├── isValidBook.ts
-│   ├── matches.ts
-│   ├── redactSensitiveUrlParams.ts
 │   ├── buildProviderAQuery.ts
 │   ├── buildProviderBQuery.ts
 │   ├── buildProviderCQuery.ts
 │   ├── buildProviderDQuery.ts
 │   ├── buildProviderEQuery.ts
-│   ├── runParallelSearch.ts
-│   ├── runSingleSearch.ts
+│   ├── createQueryResolver.ts
+│   ├── getSearchParams.ts
+│   ├── getTextContent.ts
+│   ├── getValueAtDotPath.ts
+│   ├── index.ts
+│   ├── isRetryable.ts
+│   ├── isValidBook.ts
+│   ├── matches.ts
+│   ├── parallelProvidersSearch.ts
+│   ├── redactSensitiveUrlParams.ts
 │   ├── sanitizeQuery.ts
+│   ├── sendJson.ts
+│   ├── sendXml.ts
+│   ├── singleProviderSearch.ts
+│   ├── toXml.ts
 │   └── wait.ts
 │
 ├── providers/
@@ -71,35 +119,6 @@ src/
 
 ---
 
-## Architecture Overview
-
-The application is split into four main concerns: **adapters**, **services**, **providers**, and **helpers**.
-
-```
-example-client.ts  (entry point)
-       │
-       ▼
-  runSingleSearch / runParallelSearch
-       │
-       ▼
-  getBooksByAuthor / getBooksByTitle / ...   (services)
-       │
-       ▼
-  fetchBooks  (providers/bookSearchClient.ts)
-       │
-       ├── adapter.buildUrl()   →   HTTP GET   →   mockServer.ts
-       │                                                │
-       │                                         resolveProviderXQuery()
-       │                                         executeProviderXQuery()
-       │                                         getValueAtDotPath() (D, E only)
-       │                                                │
-       ◄───────────────── raw JSON / XML ───────────────┘
-       │
-       └── adapter.normalize()  →  Book[]
-```
-
----
-
 ## Layers
 
 ### Adapters (`src/adapters/`)
@@ -123,21 +142,25 @@ Provider A additionally supports XML responses via `parseProviderAXml`.
 
 | File | Purpose |
 |---|---|
-| `createQueryResolver.ts` | Generic factory that creates a resolver function for a given param-to-field map. Supports both param-based and path-based routing via an optional `pathMap`. Used by all provider executors. |
-| `getValueAtDotPath.ts` | Traverses a nested object using a dot-notation path string (e.g. `"contributors.primary.full_name"`). Used by executors for providers with deeply nested raw data shapes (D, E). |
-| `getTextContent.ts` | XML DOM helper used by the Provider A XML parser. |
-| `buildProviderAQuery.ts` | Provider A resolver — path-based routing (`/by-author`, `/by-title`). Uses `createQueryResolver` with a `pathMap` to inject the path segment as a param before resolving. |
-| `buildProviderBQuery.ts` | Provider B resolver — flat param-based routing. |
-| `buildProviderCQuery.ts` | Provider C resolver — param-based routing with provider-specific param names (`authorName`, `isbnCode`). |
-| `buildProviderDQuery.ts` | Provider D resolver — param-based routing with dot-notation field paths for nested data access via `getValueAtDotPath`. |
-| `buildProviderEQuery.ts` | Provider E resolver — param-based routing with three-level nested data access via `getValueAtDotPath`. |
-| `runSingleSearch.ts` | Runs a single provider query, logs results, writes to file. |
-| `runParallelSearch.ts` | Fires all providers concurrently via `Promise.allSettled`, collects and logs results independently. |
-| `matches.ts` | Case-insensitive string matching used by mock executors. |
-| `isRetryable.ts` | Determines whether an HTTP status code warrants a retry (e.g. 503). |
+| `createQueryResolver.ts` | Generic factory that creates a resolver function for a given param-to-field map. Supports param-based and path-based routing via an optional `pathMap`. Used by all provider query builders. |
+| `getValueAtDotPath.ts` | Traverses a nested object using a dot-notation path string e.g. `"contributors.primary.full_name"`. Used by providers D and E whose raw data is deeply nested. |
+| `buildProviderAQuery.ts` | Provider A — path-based routing (`/by-author`, `/by-title`). Uses `createQueryResolver` with a `pathMap` to inject the path segment as a param before resolving. Also contains `filterProviderABooks`. |
+| `buildProviderBQuery.ts` | Provider B — flat param-based routing. Contains `filterProviderBBooks`. |
+| `buildProviderCQuery.ts` | Provider C — param-based routing with custom param names (`authorName`, `isbnCode`, `pricing`). Contains `filterProviderCBooks`. |
+| `buildProviderDQuery.ts` | Provider D — param-based routing with dot-notation field paths for nested data access. Contains `filterProviderDBooks`. |
+| `buildProviderEQuery.ts` | Provider E — param-based routing with three-level nested data access via `getValueAtDotPath`. Contains `filterProviderEBooks`. |
+| `parallelProvidersSearch.ts` | Fires all providers concurrently via `Promise.allSettled`, collects and logs results independently. |
+| `singleProviderSearch.ts` | Runs a single provider query, logs results, writes to file. |
+| `getSearchParams.ts` | Extracts and parses `URLSearchParams` from an incoming request URL. |
+| `sendJson.ts` | Writes a JSON response with the correct status code and `Content-Type` header. |
+| `sendXml.ts` | Writes an XML response with the correct status code and `Content-Type` header. |
+| `toXml.ts` | Serializes `ProviderARawItem[]` into an XML string for Provider A XML responses. |
+| `matches.ts` | Case-insensitive string matching used by mock data filters. |
+| `isRetryable.ts` | Determines whether an HTTP status code warrants a retry e.g. 503. |
 | `isValidBook.ts` | Guards against malformed books before writing to the result log. |
 | `sanitizeQuery.ts` | Strips sensitive values from query objects before logging. |
-| `redactSensitiveUrlParams.ts` | Redacts sensitive URL searchParams (e.g. API keys) before logging. |
+| `redactSensitiveUrlParams.ts` | Redacts sensitive URL params e.g. API keys before logging. |
+| `getTextContent.ts` | XML DOM helper used by the Provider A XML parser. |
 | `wait.ts` | Promise-based delay used for retry backoff. |
 
 ### Utils (`src/utils/`)
@@ -147,26 +170,19 @@ Provider A additionally supports XML responses via `parseProviderAXml`.
 | `httpClient.ts` | Axios-based HTTP GET with retry loop and exponential backoff. Handles both JSON and XML response parsing. |
 | `logger.ts` | Structured JSON logger (info, warn, error) with timestamps and context. Writes newline-delimited JSON to `stdout` / `stderr`. |
 | `prettyLog.ts` | Dev-only formatter. Reads newline-delimited JSON from `stdin` via pipe and prints colourised human-readable output to the terminal. |
-| `searchResultLogger.ts` | Writes normalised `Book[]` results to `logs/search-results.json` after each query. |
+| `searchResultLogger.ts` | Appends normalised `Book[]` results to `logs/search-results.json` after each query. Resets on each run via `initSearchResultLog`. |
 
 ### Mock Server (`src/mockServer.ts`)
 
-A local HTTP server that simulates five book providers. Each provider route:
+A local HTTP server that simulates five book providers. Each provider route validates the incoming params, filters the in-memory mock data, and returns the result as JSON (or XML for Provider A).
 
-- Parses the incoming `URLSearchParams`
-- Calls the provider's `resolveProviderXQuery` to validate searchParams
-- Calls `executeProviderXQuery` to filter mock data
-- Returns the result as JSON (or XML for Provider A)
-
-Providers also simulate real-world conditions:
-
-| Provider | Routing | Behaviour |
+| Provider | Routing | Simulated Behaviour |
 |---|---|---|
-| A | Path-based (`/by-author`, `/by-title`) | Supports both JSON and XML response formats |
-| B | Param-based | 400ms simulated latency |
-| C | Param-based with custom param names | Every other request returns 503 to exercise the retry path |
-| D | Param-based with nested data | Nested data shape accessed via dot-notation paths using `getValueAtDotPath` |
-| E | Param-based with deeply nested data | Three-level nested data shape accessed via `getValueAtDotPath` |
+| A | Path-based (`/by-author`, `/by-title`) | JSON and XML response formats |
+| B | Param-based | 400ms latency |
+| C | Param-based, custom param names | Every other request returns 503 to exercise retry logic |
+| D | Param-based, nested data | Dot-notation field paths via `getValueAtDotPath` |
+| E | Param-based, deeply nested data | Three-level dot-notation paths via `getValueAtDotPath` |
 
 ---
 
@@ -175,9 +191,10 @@ Providers also simulate real-world conditions:
 ```typescript
 // The canonical query shape used throughout the app
 interface SearchQuery {
-  type: QueryType;   // "author" | "publisher" | "year" | "isbn" | "title"
+  type: QueryType;      // "author" | "publisher" | "year" | "isbn" | "title" | "price"
   value: string;
   limit: number;
+  operator?: QueryOperator; // "eq" | "gt" | "lt" | "gte" | "lte" — for numeric fields
 }
 
 // The unified book shape all adapters normalize into
@@ -203,7 +220,7 @@ interface BookProviderAdapter {
 
 ## Query Resolution Flow
 
-The adapter and mock server executor use two separate maps that must stay in sync:
+The adapter and mock server use two maps that must stay in sync:
 
 ```
 SearchQuery["type"]          canonical type used inside the app
@@ -215,26 +232,26 @@ Adapter QUERY_PARAM_MAP      translates to the URL param key the provider expect
 URL param key                travels over the wire in the HTTP request
         │
         ▼
-Executor QUERY_TO_FIELD_MAP  keys must match the URL param key exactly
+QUERY_TO_FIELD_MAP           keys must match the URL param key exactly
         │
         ▼
 Raw item field / path        flat field name or dot-notation path
         │
         ▼
-getValueAtDotPath()             resolves dot-notation path into the nested raw item
-                             (used by providers D and E only)
+getValueAtDotPath()          resolves dot-notation path into the nested raw item
+                             (providers D and E only)
 ```
 
 ### Path-Based vs Param-Based Routing
 
-Provider A uses path-based routing — the query type lives in the URL path rather than a param key. `createQueryResolver` handles this transparently via an optional `pathMap`:
+Provider A uses path-based routing — the query type is in the URL path, not a param key. `createQueryResolver` handles this via an optional `pathMap` that injects the path segment as a param before resolving:
 
 ```
 /provider-a/by-author?q=Shakespeare
         │
         ▼
 pathMap["by-author"] → "author"
-searchParams.set("author", "Shakespeare")
+params.set("author", "Shakespeare")
         │
         ▼
 createQueryResolver resolves "author" normally
@@ -246,19 +263,10 @@ All other providers use standard param-based routing:
 /provider-c/v2/books?authorName=Tolkien
         │
         ▼
-createQueryResolver finds "authorName" in searchParams
+createQueryResolver finds "authorName" in params
         │
         ▼
-{ type: "authorName", field: "authorName", value: "Tolkien" }
-```
-
-### getValueAtDotPath
-
-Used by providers D and E whose raw data is deeply nested. Takes an object and a dot-notation path and walks down the object to return the value:
-
-```typescript
-getValueAtDotPath(item, "contributors.primary.full_name")
-// → item.contributors.primary.full_name
+{ field: "authorName", value: "Tolkien" }
 ```
 
 ---

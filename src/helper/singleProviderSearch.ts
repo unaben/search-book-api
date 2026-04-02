@@ -2,7 +2,7 @@ import { BookSearchError } from "../errors";
 import type { Book } from "../types";
 import { logger, appendSearchResult } from "../utils";
 
-export const runSingleSearch = async (
+export const singleProviderSearch = async (
   label: string,
   provider: string,
   format: string,

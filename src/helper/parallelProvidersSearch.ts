@@ -18,7 +18,7 @@ const QUERY_FN_MAP: Record<QueryType, QueryFn> = {
   title: getBooksByTitle,
 };
 
-export const runParallelSearch = async (
+export const parallelProviderSearch = async (
   queryType: QueryType,
   value: string,
   limit: number,

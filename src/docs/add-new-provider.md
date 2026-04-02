@@ -246,7 +246,7 @@ export const ALL_PROVIDERS = [
 ] as const;
 ```
 
-This is what powers `runParallelSearch` when no explicit providers are passed — every provider in this list will be queried.
+This is what powers `parallelProviderSearch` when no explicit providers are passed — every provider in this list will be queried.
 
 ---
 
@@ -267,7 +267,7 @@ Use in `src/example-client.ts`:
 ```typescript
 import { providerEAdapter } from "./adapters";
 
-await runParallelSearch("author", "Harper Lee", 3, [
+await parallelProviderSearch("author", "Harper Lee", 3, [
   { adapter: providerEAdapter, name: "ProviderE", format: "json" },
 ]);
 ```

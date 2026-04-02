@@ -1,11 +1,11 @@
 import { getTextContent } from "./getTextContent";
 import { isRetryable } from "./isRetryable";
-import { runSingleSearch } from "./runSingleSearch";
+import { singleProviderSearch } from "./singleProviderSearch";
 import { sanitizeQuery } from "./sanitizeQuery";
 import { wait } from "./wait";
 import { redactSensitiveUrlParams } from "./redactSensitiveUrlParams";
 import { isValidBook } from "./isValidBook";
-import { runParallelSearch } from "./runParallelSearch";
+import { parallelProviderSearch } from "./parallelProvidersSearch";
 import {
   buildProviderAQuery,
   executeProviderAQuery,
@@ -36,12 +36,12 @@ import getSearchParams from "./getSearchParams";
 export {
   getTextContent,
   isRetryable,
-  runSingleSearch,
+  singleProviderSearch,
   sanitizeQuery,
   wait,
   redactSensitiveUrlParams,
   isValidBook,
-  runParallelSearch,
+  parallelProviderSearch,
   buildProviderAQuery,
   buildProviderBQuery,
   buildProviderCQuery,
