@@ -20,7 +20,7 @@ const expectedBook: Book = {
 };
 
 describe("providerAAdapter", () => {
-  describe("toBook()", () => {
+  describe("normalize()", () => {
     it("maps nested book/stock schema to unified Book model", () => {
       const raw = {
         book: {
@@ -30,7 +30,7 @@ describe("providerAAdapter", () => {
         },
         stock: { quantity: 10, price: 9.99 },
       };
-      expect(providerAAdapter.toBook(raw)).toEqual(expectedBook);
+      expect(providerAAdapter.normalize(raw)).toEqual(expectedBook);
     });
   });
 
@@ -79,7 +79,7 @@ describe("providerAAdapter", () => {
 });
 
 describe("providerBAdapter", () => {
-  describe("toBook()", () => {
+  describe("normalize()", () => {
     it("maps flat Provider B schema (name/writtenBy/cost) to unified Book model", () => {
       const raw = {
         name: "Hamlet",
@@ -88,7 +88,7 @@ describe("providerBAdapter", () => {
         availability: 10,
         cost: 9.99,
       };
-      expect(providerBAdapter.toBook(raw)).toEqual(expectedBook);
+      expect(providerBAdapter.normalize(raw)).toEqual(expectedBook);
     });
   });
 
@@ -114,7 +114,7 @@ describe("providerBAdapter", () => {
 });
 
 describe("providerCAdapter", () => {
-  describe("toBook()", () => {
+  describe("normalize()", () => {
     it("maps Provider C schema (authorName/isbnCode/pricing.amount) to unified Book model", () => {
       const raw = {
         title: "Hamlet",
@@ -123,7 +123,7 @@ describe("providerCAdapter", () => {
         stockCount: 10,
         pricing: { amount: 9.99 },
       };
-      expect(providerCAdapter.toBook(raw)).toEqual(expectedBook);
+      expect(providerCAdapter.normalize(raw)).toEqual(expectedBook);
     });
   });
 
@@ -158,9 +158,9 @@ describe("Cross-provider normalization", () => {
       pricing: { amount: 9.99 },
     };
 
-    const normalizedA = providerAAdapter.toBook(rawA);
-    const normalizedB = providerBAdapter.toBook(rawB);
-    const normalizedC = providerCAdapter.toBook(rawC);
+    const normalizedA = providerAAdapter.normalize(rawA);
+    const normalizedB = providerBAdapter.normalize(rawB);
+    const normalizedC = providerCAdapter.normalize(rawC);
 
     expect(normalizedA).toEqual(normalizedB);
     expect(normalizedB).toEqual(normalizedC);
@@ -203,8 +203,8 @@ describe("XML support — parseProviderAXml", () => {
       stock: { quantity: 10, price: 9.99 },
     };
 
-    expect(xmlAdapter.toBook(rawFromXml)).toEqual(
-      jsonAdapter.toBook(rawFromJson)
+    expect(xmlAdapter.normalize(rawFromXml)).toEqual(
+      jsonAdapter.normalize(rawFromJson)
     );
   });
 

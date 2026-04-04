@@ -25,7 +25,7 @@ export const providerEAdapter: BookProviderAdapter = {
     return `${config.providers.providerE}/search?${searchParams.toString()}`;
   },
 
-  toBook: (rawItem: unknown): Book => {
+  normalize: (rawItem: unknown): Book => {
     const item = rawItem as ProviderERawItem;
     return {
       title: item.metadata.title,

@@ -23,7 +23,7 @@ export interface BookProviderAdapter {
   readonly baseUrl: string;
   readonly format: ResponseFormat;
   buildUrl: (query: SearchQuery) => string;
-  toBook: (rawItem: unknown) => Book;
+  normalize: (rawItem: unknown) => Book;
 }
 
 export interface RetryConfig {

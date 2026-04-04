@@ -34,7 +34,7 @@ export const fetchBooks = async (
       retryConfig
     );
     
-    const books = rawBooksResponse.map((item) => adapter.toBook(item));
+    const books = rawBooksResponse.map((item) => adapter.normalize(item));
 
     logger.info("Books fetched successfully", {
       provider: adapter.providerName,
