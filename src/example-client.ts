@@ -45,7 +45,7 @@ const main = async (): Promise<void> => {
   //   getBooksByYear(providerAAdapter, "1599", 3)
   // );
 
-  // // ── Provider A: XML — same normalize(), different wire format ──
+  // // ── Provider A: XML — same toBook(), different wire format ──
   // await singleProviderSearch(
   //   "Provider A — XML — Books by Author: Shakespeare",
   //   "ProviderA",

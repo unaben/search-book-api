@@ -59,7 +59,7 @@ export const createProviderAAdapter = (
       return `${baseUrl}/${path}?${searchParams.toString()}`;
     },
 
-    normalize: (rawItem: unknown): Book => {
+    toBook: (rawItem: unknown): Book => {
       const item = rawItem as ProviderARawItem;
       return {
         title: item.book.title,

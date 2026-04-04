@@ -27,7 +27,7 @@ example-client.ts  (entry point)
   fetchBooks  (providers/bookSearchClient.ts)
   (retry loop with exponential backoff)
        │
-       ├── adapter.buildUrl()          adapter.normalize()
+       ├── adapter.buildUrl()          adapter.toBook()
        │        │                             ▲
        │        ▼                             │
        │   HTTP GET ──────────────► mockServer.ts
@@ -126,7 +126,7 @@ src/
 Each provider has its own adapter that implements `BookProviderAdapter`. The adapter has two responsibilities:
 
 - `buildUrl(query)` — translates a `SearchQuery` into the URL that provider's server understands, mapping canonical query types (`author`, `title`, etc.) to provider-specific param keys.
-- `normalize(rawItem)` — maps the provider's raw response shape into the shared `Book` type.
+- `toBook(rawItem)` — maps the provider's raw response shape into the shared `Book` type.
 
 Provider A additionally supports XML responses via `parseProviderAXml`.
 
@@ -136,7 +136,7 @@ Provider A additionally supports XML responses via `parseProviderAXml`.
 
 ### Providers (`src/providers/`)
 
-`bookSearchClient.ts` contains `fetchBooks`, the HTTP layer. It calls `adapter.buildUrl()`, makes the HTTP GET request via `httpGet`, handles retries with exponential backoff, and calls `adapter.normalize()` on each item in the response.
+`bookSearchClient.ts` contains `fetchBooks`, the HTTP layer. It calls `adapter.buildUrl()`, makes the HTTP GET request via `httpGet`, handles retries with exponential backoff, and calls `adapter.toBook()` on each item in the response.
 
 ### Helpers (`src/helper/`)
 
@@ -197,7 +197,7 @@ interface SearchQuery {
   operator?: QueryOperator; // "eq" | "gt" | "lt" | "gte" | "lte" — for numeric fields
 }
 
-// The unified book shape all adapters normalize into
+// The unified book shape all adapters toBook into
 interface Book {
   title: string;
   author: string;
@@ -212,7 +212,7 @@ interface BookProviderAdapter {
   baseUrl: string;
   format: ResponseFormat;
   buildUrl(query: SearchQuery): string;
-  normalize(rawItem: unknown): Book;
+  toBook(rawItem: unknown): Book;
 }
 ```
 

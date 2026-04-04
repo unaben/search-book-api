@@ -20,7 +20,7 @@ export const providerCAdapter: BookProviderAdapter = {
     return `${config.providers.providerC}/v2/books?${searchParams.toString()}`;
   },
 
-  normalize: (rawItem: unknown): Book => {
+  toBook: (rawItem: unknown): Book => {
     const item = rawItem as ProviderCRawItem;
 
     return {
